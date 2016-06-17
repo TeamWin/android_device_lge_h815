@@ -53,3 +53,6 @@ BOARD_SUPPRESS_SECURE_ERASE := true
 RECOVERY_SDCARD_ON_DATA := true
 BOARD_HAS_NO_REAL_SDCARD := true
 TW_SCREEN_BLANK_ON_BOOT := true
+# /sys/devices/soc.0/fd900000.qcom,mdss_mdp/qcom,mdss_fb_primary.186/leds/lcd-backlight/brightness
+TW_BRIGHTNESS_PATH := "/sys/devices/soc.0/fd900000.qcom\x2cmdss_mdp/qcom\x2cmdss_fb_primary.186/leds/lcd-backlight/brightness"
+#TW_BOARD_CUSTOM_GRAPHICS := ../../../device/lge/h815/graphics.c
