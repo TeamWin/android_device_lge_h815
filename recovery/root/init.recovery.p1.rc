@@ -1,12 +1,12 @@
 # steadfasterX: making blockdevice a symlink for qseecomd
 # qseecomd will CHECK if that is a SYMLINK! and if NOT -> it CRASHES!
 # Writing a script was required as doing the same on fs, boot, init,.. has NOT worked!!
-service createsym /sbin/sh /createsym.sh
+service createsym /sbin/sh /sbin/createsym.sh
     oneshot
     disabled
 
 # steadfasterX: fix time in TWRP (read timekeep value from ROM)
-service getadjust /sbin/sh /readtimeprop.sh
+service getadjust /sbin/sh /sbin/readtimeprop.sh
     oneshot
     disabled
 
@@ -20,12 +20,26 @@ service time_daemon /sbin/time_daemon
     oneshot
     disabled
 
+# external sdcard tuning
+service tunesd /sbin/sh /sbin/tunesd.sh
+    oneshot
+    disabled
+
 on fs
+    #start debugme
     # steadfasterX: make double tap work in TWRP
     write /sys/devices/virtual/input/lge_touch/tap2wake 1
     
     # encryption support
     service qseecomd /sbin/qseecomd
+
+on post-fs
+    # performance tuning for backup to external SD card
+    start tunesd
+    
+    # scaling gov
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor intelliactive
+    write /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor intelliactive
 
 on boot
     # steadfasterX: see service for explanation
@@ -43,7 +57,6 @@ on boot
         seclabel u:r:logd:s0
         group root system
     
-
 on property:twrp.timeadjusted=1
     #steadfasterX: update time to value from CM/AOSP based ROMs (after time property was written)
     start timekeep
